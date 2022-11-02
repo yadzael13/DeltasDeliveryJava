@@ -1,5 +1,7 @@
 package com.app.DeltasDelivery.Deltas.Entities;
 
+import org.json.JSONObject;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
@@ -20,6 +22,9 @@ public class ResponseGeneral {
 
     @JsonProperty("ResultDescription")
     public String resultDescription;
+
+    @JsonProperty("body")
+    public JSONObject body;
 
 
 }

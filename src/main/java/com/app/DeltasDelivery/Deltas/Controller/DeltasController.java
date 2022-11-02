@@ -1,14 +1,16 @@
 package com.app.DeltasDelivery.Deltas.Controller;
 
 //Librerias básicas
-import com.app.DeltasDelivery.Deltas.Entities.Products.InputProduct;
+import com.app.DeltasDelivery.Deltas.Entities.Products.*;
+
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 //Entities y logica
-import com.app.DeltasDelivery.Deltas.Logic.ProductsLogic;
+import com.app.DeltasDelivery.Deltas.Logic.*;
 
 // Json
 
@@ -34,6 +36,17 @@ public class DeltasController {
 
         var result = productsLogic.Products(body);
 
+        return ResponseEntity.status(HttpStatus.CREATED).body(result);
+
+
+
+    }
+
+    @GetMapping("/get_json")
+    public ResponseEntity <?> getJson(){
+
+        var result = jsonLogic.getJson();
+    
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
 
 

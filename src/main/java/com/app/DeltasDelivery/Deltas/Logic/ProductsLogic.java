@@ -1,7 +1,6 @@
 package com.app.DeltasDelivery.Deltas.Logic;
 
-import com.app.DeltasDelivery.Deltas.Entities.Products.InputProduct;
-import com.app.DeltasDelivery.Deltas.Entities.Products.PlantillaProduct;
+import com.app.DeltasDelivery.Deltas.Entities.Products.*;
 import com.app.DeltasDelivery.Deltas.Entities.ResponseGeneral;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
@@ -43,20 +42,6 @@ public class ProductsLogic {
         // Mandar campos que solo se quieren modificar
         // dato por =""
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         ResponseGeneral response = new ResponseGeneral();
         response.setCode("200");
         response.setResult("Producto Creado");
@@ -65,4 +50,6 @@ public class ProductsLogic {
         return response;
 
     }
+
+
 }
