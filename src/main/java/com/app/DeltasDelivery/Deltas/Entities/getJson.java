@@ -1,31 +1,28 @@
 package com.app.DeltasDelivery.Deltas.Entities;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.json.JSONTokener;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 
 
 public class getJson {
- public static JSONObject getJsonObject(){
-    String source = "JSONS/jsonprueba.json";
-    InputStream is = getJson.class.getResourceAsStream(source);
 
-    JSONTokener tokener = new JSONTokener(is);
-    JSONObject object = new JSONObject(tokener);
-    System.out.println("\n" + object);
-    
-    JSONArray arr_json = new JSONArray();
-    arr_json = object.getJSONArray("data");
-    System.out.println(arr_json.getJSONObject(0).put("bill1","111"));
-    System.out.println(arr_json.getJSONObject(0).get("bill1"));
-    
-
-    System.out.println("\n" +object);
-
-
-    
-    return object;
+ /**
+ * @param el -- String para buscar el json
+ * @return --  Archivo .json convertido a hashmap
+ */
+public static HashMap<String, Object> getJsonObject(String el){
+    String source = "JSONS/"+el+".json";
+try{
+    InputStream getLocalJsonFile = getJson.class.getResourceAsStream(source);
+    HashMap<String,Object> jsonMap = new ObjectMapper().readValue(getLocalJsonFile, HashMap.class);
+    System.out.println(jsonMap);
+    return jsonMap;
+} catch (IOException e){
+    ErrorLogger.errorMessage("getJsonObject function \n  "+e.toString());
+}
+HashMap<String,Object> jsonMap = new HashMap<>();
+return jsonMap;
  }
 }

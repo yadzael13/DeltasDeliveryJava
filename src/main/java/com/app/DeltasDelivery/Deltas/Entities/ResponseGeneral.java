@@ -1,5 +1,7 @@
 package com.app.DeltasDelivery.Deltas.Entities;
 
+import java.util.HashMap;
+
 import org.json.JSONObject;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -24,7 +26,7 @@ public class ResponseGeneral {
     public String resultDescription;
 
     @JsonProperty("body")
-    public JSONObject body;
+    public HashMap<String, Object> body;
 
 
 }
