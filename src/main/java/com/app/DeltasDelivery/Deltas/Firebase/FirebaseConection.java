@@ -19,9 +19,9 @@ public class FirebaseConection {
 
     @PostConstruct
     private void firestoreInit() throws IOException{
-        String projectId = "SpringBoot-CRUD-Yadza";
+        String projectId = "proyecto-bg-v1";
         try{
-            String real_path = "key.json";
+            String real_path = "C:/Users/hvargasc/Documents/Nuevos_Deltas_Java/DeltasDelivery/src/main/java/com/app/DeltasDelivery/Deltas/Firebase/key.json";
             FileInputStream credentials = new FileInputStream(real_path);
             System.out.println(credentials);
             FirebaseOptions options = FirebaseOptions.builder()
