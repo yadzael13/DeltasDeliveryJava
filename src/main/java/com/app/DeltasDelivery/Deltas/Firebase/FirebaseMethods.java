@@ -8,12 +8,12 @@ import lombok.var;
 public interface FirebaseMethods {
 
     FirebaseConection firebase = new FirebaseConection();
-
+    String col_name = "comercios_dev";
     static DocumentReference getComercio(String idRestaurante) {
         try{
             assert false;
             var ret = firebase.getFirestore()
-            .collection("comercios_dev")
+            .collection(col_name)
             .document(idRestaurante);
             return ret;
         } catch (Exception e){
@@ -22,7 +22,16 @@ public interface FirebaseMethods {
         }
         
     }
-
+    //Pendiente, Preguntar a Bren como llego a los productos para consultar directamente un producto con id
+    static DocumentReference getProduct(String idRestaurante, String category, String idProduct ){
+        var ret = firebase.getFirestore()
+        //De qui apr abajo hay porquerías :P, no sé como es la estructura en la DB real
+        .collection(col_name)
+        .document(idRestaurante)
+        .collection("categories")
+        .document(category);
+        return ret;
+    }
     default DocumentReference getPOS(String pointsOfService){
         
         assert false;

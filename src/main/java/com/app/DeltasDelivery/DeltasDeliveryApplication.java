@@ -8,7 +8,7 @@ public class DeltasDeliveryApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(DeltasDeliveryApplication.class, args);
-		System.out.println(" --Arranco correctamente el proyecto-- \n ***-------- DELTAS --------***");
+		System.out.println("\n \n --**--Arranco correctamente el proyecto--**-- \n ***-------- DELTAS --------***");
 	}
 
 }
