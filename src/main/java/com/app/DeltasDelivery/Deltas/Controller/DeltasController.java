@@ -37,16 +37,7 @@ public class DeltasController {
         //@RequestHeader("env") String env
         // Mando a funcion body, env
 ){
-    body.forEach((key, value) -> {
-        System.out.println(key+" : "+value);
-        System.out.println(key.getClass().getName()+" : "+value.getClass().getName());
-        if(value instanceof LinkedHashMap){
-            System.out.println(true);
-        }
-        System.out.println();
-    });
-    var result = body;
-    System.out.println(body);
+        var result = ProductsLogic2.ProductLogic(body);
         return ResponseEntity.status(HttpStatus.CREATED).body(result); 
 }
     @GetMapping("/create_product")

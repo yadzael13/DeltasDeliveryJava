@@ -1,16 +1,25 @@
 package com.app.DeltasDelivery.Deltas.Firebase;
 
+import com.app.DeltasDelivery.Deltas.Entities.ErrorLogger;
 import com.google.cloud.firestore.DocumentReference;
+
+import lombok.var;
 
 public interface FirebaseMethods {
 
     FirebaseConection firebase = new FirebaseConection();
 
-    default DocumentReference getComercio(String idRestaurante) {
-        assert false;
-        return firebase.getFirestore()
-                        .collection("comercios_dev")
-                        .document(idRestaurante);
+    static DocumentReference getComercio(String idRestaurante) {
+        try{
+            assert false;
+            var ret = firebase.getFirestore()
+            .collection("comercios_dev")
+            .document(idRestaurante);
+            return ret;
+        } catch (Exception e){
+            ErrorLogger.errorMessage("\n Error en firebase- getComercio()"+e.toString());
+            return null;
+        }
         
     }
 
