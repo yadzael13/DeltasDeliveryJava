@@ -19,7 +19,7 @@ try{
     HashMap<String,Object> jsonMap = new ObjectMapper().readValue(getLocalJsonFile, HashMap.class);
     return jsonMap;
 } catch (IOException e){
-    ErrorLogger.errorMessage("getJsonObject function \n  "+e.toString());
+    Loggers.errorLogger("getJsonObject function (To convert .json into Hashmap)",e.toString());
 }
 HashMap<String,Object> jsonMap = new HashMap<>();
 return jsonMap;
