@@ -9,7 +9,8 @@ public class Loggers {
     public static void errorLogger(String path, String error){
         Logger LOGGER = LoggerFactory.getLogger(Slf4j.class);
         LOGGER.error("\n ---------- ** -------- \n  Path: "+path+
-                        "\nError: "+error+"\n ---------- ** -------- \n\n");
+                     "\nError: "+error
+                    +"\n ---------- ** -------- \n\n");
     }
     public static void infoLogger(String path, String info){
         Logger LOGGER = LoggerFactory.getLogger(Slf4j.class);

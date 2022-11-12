@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 
 
 //Entities y logica
@@ -36,10 +35,10 @@ public class DeltasController {
         @RequestBody HashMap<String, Object> body
         //@RequestHeader("env") String env
         // Mando a funcion body, env
-){
+        ){
         var result = ProductsLogic2.ProductLogic(body);
         return ResponseEntity.status(HttpStatus.CREATED).body(result); 
-}
+        }
     @GetMapping("/create_product")
     public ResponseEntity <?> CreateProduct(
             @RequestBody InputProduct body

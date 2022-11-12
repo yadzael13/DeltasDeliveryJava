@@ -8,7 +8,7 @@ import java.util.HashMap;
 
 public class getJson {
 
- /**
+ /** Función que convierte un archivo .json a un objeto HashMap
  * @param el -- String para buscar el json
  * @return --  Archivo .json convertido a Hashmap
  */

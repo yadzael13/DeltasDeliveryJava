@@ -1,7 +1,11 @@
 package com.app.DeltasDelivery.Deltas.Firebase;
 
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
+
 import com.app.DeltasDelivery.Deltas.Entities.Loggers;
 import com.google.cloud.firestore.DocumentReference;
+import com.google.cloud.firestore.DocumentSnapshot;
 
 import lombok.var;
 
@@ -16,9 +20,7 @@ public interface FirebaseMethods {
     *---------------------*
             2022 
     ---------------------
-     Todos los métodos de éste documento retornan un objeto tipo:
-     -DocumentReference
-     -CollectionReference
+     
     */
 
     
@@ -28,11 +30,11 @@ public interface FirebaseMethods {
     String col_name = "comercios_dev";
 
     
-    //-------------------------------------- METODOS GET -----------------------------------//
+    //-------------------------------------- METODOS PARA OBTENER -----------------------------------//
     /** Obtener Comercio por id ------------*
      * @param idRestaurante
      */
-    static DocumentReference getComercio(String idRestaurante) {
+    static DocumentReference getRestaurante(String idRestaurante) {
         try{
             var ret = firebase.getFirestore()
             .collection(col_name)
@@ -47,13 +49,16 @@ public interface FirebaseMethods {
     
     /** Obtener producto por id
      * @param idRestaurante
+     * @param category
      * @param idProduct
      */
-    static DocumentReference getProduct(String idRestaurante, String idProduct ){
+    static DocumentReference getProduct(String idRestaurante, String category, String idProduct ){
         try{
             var ret = firebase.getFirestore()
                                 .collection(col_name)
                                 .document(idRestaurante)
+                                .collection("categories")
+                                .document(category)
                                 .collection("products")
                                 .document(idProduct);
             return ret;
@@ -64,32 +69,12 @@ public interface FirebaseMethods {
        
     }
 
-    /** Obtener Promocion
-     * @param idRestaurante
-     * @param idPromo
-     */
-    static DocumentReference getPromotions(String idRestaurante, String idPromo ){
-        try{
-            var ret = firebase.getFirestore()
-                                .collection(col_name)
-                                .document(idRestaurante)
-                                .collection("categories")
-                                .document("PROMOTIONS")
-                                .collection("products")
-                                .document(idPromo);
-            return ret;
-        }catch(Exception e){
-            Loggers.errorLogger("Error en firebase- getPromotions()",e.toString());
-            return null;
-        }
-       
-    }
 
        /** Obtener Categoria
      * @param idRestaurante
      * @param idPromo
      */
-    static DocumentReference getCategory(String idRestaurante, String idCat ){
+    static DocumentReference getCategory(String idRestaurante, String idCat){
         try{
             var ret = firebase.getFirestore()
                                 .collection(col_name)
@@ -104,6 +89,75 @@ public interface FirebaseMethods {
        
     }
 
+
+    
+    //-------------------------------------- METODOS PARA CREAR / ACTUALIZAR -----------------------------------//
+    
+    /** Crear o Actualizar Restaurante con método set()
+     * @param idRestaurante
+     * @param body
+     * @return true si no ha habido error / false si cae en catch
+     */
+    static Boolean create_updateRestaurante(String idRestaurante, Map<String, Object> body){
+        Boolean status;
+        try{
+            var reference = getRestaurante(idRestaurante);
+            reference.set(body);
+            Loggers.infoLogger("FirebaseMethods Succesfull", "Restarante creado --- "+idRestaurante);
+            status = true;
+            return status;
+        } catch(Exception e){
+            Loggers.errorLogger("createRestaurante() -- FirebaseMethods", e.toString());
+            status = false;
+            return status;
+        }
+        
+    }
+
+      /** Crear o Actualizar Categoria con método set()
+     * @param idRestaurante
+     * @param category
+     * @param body
+     * @return true si no ha habido error / false si cae en catch
+     */
+    static Boolean create_updateCategory(String idRestaurante, String category, Map<String, Object> body){
+        Boolean status;
+        try{
+            var reference = getCategory(idRestaurante, category);
+            reference.set(body);
+            Loggers.infoLogger("FirebaseMethods Succesfull", "Categoria creada --- "+"comercio: "+idRestaurante+"\ncat: "+category);
+            status = true;
+            return status;
+        } catch(Exception e){
+            Loggers.errorLogger("createRestarante() -- FirebaseMethods", e.toString());
+            status = false;
+            return status;
+        }
+        
+    }
+
+
+       /** Crear o Actualizar Producto con método set()
+     * @param idRestaurante
+     * @param body
+     * @return true si no ha habido error / false si cae en catch
+     */
+    static Boolean create_updateProduct(String idRestaurante, String category, String idProduct, Map<String, Object> body){
+        Boolean status;
+        try{
+            var reference = getProduct(idRestaurante, category, idProduct);
+            reference.set(body);
+            Loggers.infoLogger("FirebaseMethods Succesfull", 
+            "Producto creado--- "+"comercio: "+idRestaurante+"\ncat: "+category+"\nproduct: "+idProduct);
+            status = true;
+            return status;
+        } catch(Exception e){
+            Loggers.errorLogger("createRestarante() -- FirebaseMethods", e.toString());
+            status = false;
+            return status;
+        }
+    }
+    
 
 
     //Métodos de Charly, Dispositivos, monitoreo, etc

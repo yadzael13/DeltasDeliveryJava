@@ -1,6 +1,6 @@
 package com.app.DeltasDelivery.Deltas.Logic;
 
-import com.app.DeltasDelivery.Deltas.Entities.ErrorLogger;
+import com.app.DeltasDelivery.Deltas.Entities.Loggers;
 import com.app.DeltasDelivery.Deltas.Entities.ResponseGeneral;
 import com.app.DeltasDelivery.Deltas.Entities.getJson;
 
@@ -26,7 +26,7 @@ public class jsonLogic {
             response.setCode("400");
             response.setResult("Error");
             response.setResultDescription("Json no encontrado");
-            ErrorLogger.errorMessage("getJson into Logic \n  "+e.toString());
+            Loggers.errorLogger("getJson into Logic",e.toString());
         }
         return response;
     }
