@@ -1,6 +1,6 @@
 package com.app.DeltasDelivery.Deltas.Firebase;
 
-import com.app.DeltasDelivery.Deltas.Entities.Loggers;
+import com.app.DeltasDelivery.Deltas.Tools.Loggers;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.firestore.Firestore;
 import com.google.firebase.FirebaseApp;

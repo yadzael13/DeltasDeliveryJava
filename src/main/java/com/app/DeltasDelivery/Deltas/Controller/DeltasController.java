@@ -7,11 +7,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
-
+import java.util.Map;
 
 //Entities y logica
 import com.app.DeltasDelivery.Deltas.Logic.*;
-import com.app.DeltasDelivery.Deltas.Entities.Products.*;
 
 
 // Json
@@ -36,28 +35,14 @@ public class DeltasController {
         //@RequestHeader("env") String env
         // Mando a funcion body, env
         ){
-        var result = ProductsLogic2.ProductLogic(body);
+        var result = ProductsLogic.ProductLogic(body);
         return ResponseEntity.status(HttpStatus.CREATED).body(result); 
         }
-    @GetMapping("/create_product")
-    public ResponseEntity <?> CreateProduct(
-            @RequestBody InputProduct body
-            //@RequestHeader("env") String env
-            // Mando a funcion body, env
-    ){
-        var result = productsLogic.Products(body);
-        return ResponseEntity.status(HttpStatus.CREATED).body(result);
-    }
 
-    @GetMapping("/get_json")
-    public ResponseEntity <?> getJson(){
 
-        var result = jsonLogic.getJson();
-        System.out.println(result);
-    
-        return ResponseEntity.status(HttpStatus.CREATED).body(result);
+
 
     }
 
 
-}
+

@@ -3,7 +3,7 @@ package com.app.DeltasDelivery.Deltas.Firebase;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
-import com.app.DeltasDelivery.Deltas.Entities.Loggers;
+import com.app.DeltasDelivery.Deltas.Tools.Loggers;
 import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.DocumentSnapshot;
 
@@ -98,18 +98,16 @@ public interface FirebaseMethods {
      * @param body
      * @return true si no ha habido error / false si cae en catch
      */
-    static Boolean create_updateRestaurante(String idRestaurante, Map<String, Object> body){
-        Boolean status;
+    static void create_updateRestaurante(String idRestaurante, Map<String, Object> body){
+        
         try{
             var reference = getRestaurante(idRestaurante);
             reference.set(body);
-            Loggers.infoLogger("FirebaseMethods Succesfull", "Restarante creado --- "+idRestaurante);
-            status = true;
-            return status;
+            Loggers.infoLogger("Restaurante Creado / Actualizado --- "+idRestaurante, "Succesfull");
+            
         } catch(Exception e){
-            Loggers.errorLogger("createRestaurante() -- FirebaseMethods", e.toString());
-            status = false;
-            return status;
+            Loggers.errorLogger("create_updateRestaurante() -- FirebaseMethods", e.toString());
+            
         }
         
     }
@@ -120,18 +118,16 @@ public interface FirebaseMethods {
      * @param body
      * @return true si no ha habido error / false si cae en catch
      */
-    static Boolean create_updateCategory(String idRestaurante, String category, Map<String, Object> body){
-        Boolean status;
+    static void create_updateCategory(String idRestaurante, String category, Map<String, Object> body){
+        
         try{
             var reference = getCategory(idRestaurante, category);
             reference.set(body);
-            Loggers.infoLogger("FirebaseMethods Succesfull", "Categoria creada --- "+"comercio: "+idRestaurante+"\ncat: "+category);
-            status = true;
-            return status;
+            Loggers.infoLogger("Categoria Creada / Actualizada --- "+"comercio: "+idRestaurante+"\ncat: "+category,"Succesfull");
+    
         } catch(Exception e){
-            Loggers.errorLogger("createRestarante() -- FirebaseMethods", e.toString());
-            status = false;
-            return status;
+            Loggers.errorLogger("create_updateCategory() -- FirebaseMethods", e.toString());
+          
         }
         
     }
@@ -142,19 +138,17 @@ public interface FirebaseMethods {
      * @param body
      * @return true si no ha habido error / false si cae en catch
      */
-    static Boolean create_updateProduct(String idRestaurante, String category, String idProduct, Map<String, Object> body){
-        Boolean status;
+    static void create_updateProduct(String idRestaurante, String category, String idProduct, Map<String, Object> body){
+        
         try{
             var reference = getProduct(idRestaurante, category, idProduct);
             reference.set(body);
-            Loggers.infoLogger("FirebaseMethods Succesfull", 
-            "Producto creado--- "+"comercio: "+idRestaurante+"\ncat: "+category+"\nproduct: "+idProduct);
-            status = true;
-            return status;
+            Loggers.infoLogger( "Producto Creado / Actualizado --- "+"comercio: "+idRestaurante+"\ncat: "+category+"\nproduct: "+idProduct,
+                            "Succesfull");
+        
         } catch(Exception e){
-            Loggers.errorLogger("createRestarante() -- FirebaseMethods", e.toString());
-            status = false;
-            return status;
+            Loggers.errorLogger("create_updateProduct() -- FirebaseMethods", e.toString());
+    
         }
     }
     

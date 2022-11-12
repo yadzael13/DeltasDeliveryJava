@@ -1,5 +1,6 @@
 package com.app.DeltasDelivery.Deltas.Entities;
 
+import com.app.DeltasDelivery.Deltas.Tools.Loggers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.io.InputStream;
