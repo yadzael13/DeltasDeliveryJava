@@ -10,8 +10,9 @@ public interface FirebaseMethods {
         assert false;
         return firebase.getFirestore()
                         .collection("comercios_dev")
-                        .document(idRestaurante);
-        
+                        .document("categories")
+                        .collection("productuct")
+                        .document();
     }
 
     default DocumentReference getPOS(String pointsOfService){

@@ -1,7 +1,7 @@
 package com.app.DeltasDelivery.Deltas.Controller;
 
 //Librerias básicas
-import com.app.DeltasDelivery.Deltas.Entities.Products.InputProduct;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +15,8 @@ import com.app.DeltasDelivery.Deltas.Logic.ProductsLogic;
 
 import lombok.var;
 
+import java.util.HashMap;
+
 
 // Indicamos que nuestra clase va ser tipo controlador
 @RestController
@@ -27,16 +29,14 @@ public class DeltasController {
 
     @GetMapping("/create_product")
     public ResponseEntity <?> CreateProduct(
-            @RequestBody InputProduct body
-            //@RequestHeader("env") String env
+            @RequestBody HashMap body,
+            @RequestHeader("env") String env
             // Mando a funcion body, env
     ){
 
-        var result = productsLogic.Products(body);
+        var result = productsLogic.Products(body,env);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
-
-
 
     }
 
