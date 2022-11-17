@@ -12,7 +12,7 @@ import java.util.Map;
 import com.app.DeltasDelivery.Deltas.Entities.ResponseGeneral;
 //Entities y logica
 import com.app.DeltasDelivery.Deltas.Logic.*;
-
+import com.google.api.gax.rpc.StatusCode.Code;
 
 // Json
 
@@ -59,11 +59,12 @@ public class DeltasController {
                 }
             }
             if(action.equals("create")){
-    
-                return ResponseEntity.status(200).body(resp);
+                var aux = comercioLogic.comercioCreate(body);
+                String code = aux.getCode();
+                return ResponseEntity.status(Integer.parseInt(code)).body(aux);
             } else if(action.equals("update")){
 
-
+                comercioLogic.comercioUpdate(body);
                 return ResponseEntity.status(200).body(resp);
             }else{
                 resp.put("Bad - Header", "El parametro \'action\' en los Headers debe ser \'create\' ó \'update\'");

@@ -7,8 +7,8 @@ import com.google.cloud.firestore.DocumentReference;
 
 public class HashConverter {
     /** Convierte un objeto DocumentReference a HashMap
-     * @param doc
-     * @return Hashmap
+     * @param doc -- DocumentReference
+     * @return HashMap<String, Object>
      * @throws InterruptedException
      * @throws ExecutionException
      */

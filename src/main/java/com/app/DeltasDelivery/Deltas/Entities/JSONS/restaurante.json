@@ -1,0 +1,15 @@
+{
+    "name" : "",
+    "geoPoint" : {
+        "latitude" : 0,
+        "lonngitude" : 0
+    },
+    "atom" : false,
+    "aqwerty" : "",
+    "list" : [{
+        "1" : 2
+    },{
+        "2" : 100
+    }],
+    "ultimo" : ""
+}
