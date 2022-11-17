@@ -6,6 +6,7 @@ import java.util.concurrent.ExecutionException;
 import com.app.DeltasDelivery.Deltas.Tools.Loggers;
 import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.DocumentSnapshot;
+import com.google.cloud.firestore.SetOptions;
 
 import lombok.var;
 
@@ -14,9 +15,8 @@ public interface FirebaseMethods {
     /*
      *Deltas Firebase Methods
      *------COLABS--------*
-     Juan Carlos Vargas
-     Brenda Medina
-     Hiram Yadzael
+     Brenda Medina Arrollo
+     Hiram Yadzael Vargas Chalico
     *---------------------*
             2022 
     ---------------------
@@ -31,6 +31,7 @@ public interface FirebaseMethods {
 
     
     //-------------------------------------- METODOS PARA OBTENER -----------------------------------//
+
     /** Obtener Comercio por id ------------*
      * @param idRestaurante
      */
@@ -91,32 +92,30 @@ public interface FirebaseMethods {
 
 
     
-    //-------------------------------------- METODOS PARA CREAR / ACTUALIZAR -----------------------------------//
+    //-------------------------------------- METODOS PARA CREAR  ---------------------------------------//
     
-    /** Crear o Actualizar Restaurante con método set()
+    /** Crear Restaurante en FireStore
      * @param idRestaurante
      * @param body
-     * @return true si no ha habido error / false si cae en catch
      */
-    static void create_updateRestaurante(String idRestaurante, Map<String, Object> body){
-        
+    static void create_restaurante(String idRestaurante, Map<String, Object> body){
         try{
             var reference = getRestaurante(idRestaurante);
             reference.set(body);
-            Loggers.infoLogger("Restaurante Creado / Actualizado --- "+idRestaurante, "Succesfull");
+            Loggers.infoLogger("Restaurante Creado--- "+idRestaurante, "Succesfull");
             
         } catch(Exception e){
-            Loggers.errorLogger("create_updateRestaurante() -- FirebaseMethods", e.toString());
+            Loggers.errorLogger("create_restaurante() -- FirebaseMethods", e.toString());
             
         }
         
     }
 
+
       /** Crear o Actualizar Categoria con método set()
      * @param idRestaurante
      * @param category
      * @param body
-     * @return true si no ha habido error / false si cae en catch
      */
     static void create_updateCategory(String idRestaurante, String category, Map<String, Object> body){
         
@@ -132,11 +131,9 @@ public interface FirebaseMethods {
         
     }
 
-
-       /** Crear o Actualizar Producto con método set()
+       /** Crear Producto 
      * @param idRestaurante
      * @param body
-     * @return true si no ha habido error / false si cae en catch
      */
     static void create_updateProduct(String idRestaurante, String category, String idProduct, Map<String, Object> body){
         
@@ -151,9 +148,38 @@ public interface FirebaseMethods {
     
         }
     }
-    
 
+    //-------------------------------------- METODOS PARA ACTUALIZAR  ---------------------------------------//
 
+    /**Actualizar Restaurante 
+     * @param idRestaurante
+     * @param body
+     */
+    static void update_restaurante(String idRestaurante, Map<String, Object> body){    
+        try{
+            var reference = getRestaurante(idRestaurante);
+            reference.set(body, SetOptions.merge());
+            Loggers.infoLogger("Restaurante Actualizado--- "+idRestaurante, "Succesfull");
+        } catch(Exception e){
+            Loggers.errorLogger("update_restaurante() -- FirebaseMethods", e.toString());
+        } 
+    }
+
+    /**Actualizar Producto
+     * @param idRestaurante
+     * @param body
+     */
+    static void update_product(String idRestaurante, String category, String idProduct, Map<String, Object> body){    
+        try{
+            var reference = getProduct(idRestaurante, category, idProduct);
+            reference.set(body, SetOptions.merge());
+            Loggers.infoLogger("Producto Actualizado--- "+idRestaurante, "Succesfull");
+        } catch(Exception e){
+            Loggers.errorLogger("update_product() -- FirebaseMethods", e.toString());
+        } 
+    }
+
+    //----------------------------------------------------------------------------
     //Métodos de Charly, Dispositivos, monitoreo, etc
     default DocumentReference getPOS(String pointsOfService){
         
