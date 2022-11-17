@@ -24,8 +24,8 @@ public class ComercioLogic {
         plantilla = getJson.getJsonObject("restaurante");
 
         HashMap<String, Object> newJsonFb = new HashMap<>();
-        newJsonFb = HashCombine.combine(plantilla, insertBody);
-
+        HashCombine obj = new HashCombine(plantilla, insertBody);
+        newJsonFb = obj.combine();
         resp.setCode("200");
         resp.setResult("Operación Correcta");
         resp.setResultDescription("Restaurante con id: "+name+" creado correctamente.");

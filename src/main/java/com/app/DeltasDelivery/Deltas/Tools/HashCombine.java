@@ -2,13 +2,22 @@ package com.app.DeltasDelivery.Deltas.Tools;
 
 import java.util.HashMap;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
 public class HashCombine {
-    public static HashMap<String, Object> combine(HashMap<String, Object>existing, HashMap<String, Object>nuevo){
+    public HashMap<String, Object> existing;
+    public HashMap<String, Object> nuevo;
+
+    public  HashMap<String, Object> combine(){
         try {
-            HashMap<String, Object> ret = new HashMap<>();
 
             nuevo.forEach((k,v) -> 
-                               existing.put(k, v)
+                                combineLogic(k,v)
                             );
             return existing;
         } catch (Exception e) {
@@ -17,4 +26,17 @@ public class HashCombine {
         }
      
     }
+    private void combineLogic(String k, Object v){
+        if(existing.containsKey(k)){
+            String type_existing = existing.get(k).getClass().getSimpleName(); 
+            String type_nuevo = nuevo.get(k).getClass().getSimpleName();
+            if(type_existing == type_nuevo){
+                existing.put(k, v);
+            }
+            
+        }
+    }
+   
+
+    
 }
