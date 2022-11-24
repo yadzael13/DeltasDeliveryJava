@@ -50,7 +50,7 @@ public class ProductsLogic {
 
         JSONObject body = new JSONObject(bodyMap);
 
-        System.out.println("ENTRO JSON");
+        System.out.println("ENTRO JSON convertido a Map");
 
         //Mandamos bandera
         PlantillaProduct platilla =new PlantillaProduct(ban);
