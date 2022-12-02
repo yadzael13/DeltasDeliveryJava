@@ -398,7 +398,7 @@ public class RestaurantsLogic {
         HashMap<String, Object> closingTime_hash = (HashMap<String, Object>) input.get("closingTime");
         String closingTime = (String) closingTime_hash.get("formattedHour");
 
-        String day = (String) input.get("week_day");
+        String day = (String) input.get("weekDay");
         day = day_funct(day);
 
         Boolean closed = (Boolean) input.get("closed");
@@ -447,6 +447,9 @@ public class RestaurantsLogic {
                 break;
             case "sáb.":
                 ret = "Sábado";
+                break;
+            case "dom.":
+                ret = "Domingo";
                 break;
             default:
                 break;
