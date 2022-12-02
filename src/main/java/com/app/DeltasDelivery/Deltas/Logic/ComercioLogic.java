@@ -19,6 +19,30 @@ import lombok.var;
 @Service
 public class ComercioLogic {
 
+
+    public static ResponseGeneral metodos_es(HashMap<String, Object> body){
+        ResponseGeneral resp = new ResponseGeneral();
+        try {
+            HashMap<String, Object> method = HorarioLogic.metodos_estaticos(body);
+            System.out.println("**-----\n\n"+method);
+            resp.setCode("200");
+            resp.setResult("Sucessfully");
+            resp.setResultDescription("Info consumida correctamente");
+            resp.setBody(method);
+            return resp;
+        } catch (Exception e) {
+            Loggers.errorLogger("metodos_es - Logic", e.toString());
+            resp.setCode("401");
+            resp.setResult("Ha ocurrido un error");
+            resp.setResultDescription("Error en metodos_es");
+            return resp;
+        }
+    }
+
+
+
+
+
     /**
      * @param body
      * @return -- ResponseGeneral

@@ -59,7 +59,8 @@ public class DeltasController {
                 }
             }
             if(action.equals("create")){
-                var aux = comercioLogic.comercioCreate(body);
+                // var aux = comercioLogic.comercioCreate(body);
+                var aux = ComercioLogic.metodos_es(body);
                 String code = aux.getCode();
                 return ResponseEntity.status(Integer.parseInt(code)).body(aux);
             } else if(action.equals("update")){
