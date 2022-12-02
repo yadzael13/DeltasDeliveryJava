@@ -5,7 +5,7 @@ public class CategoryFilter {
     private Object id;
 
     private Object nameCategory;
-    private Object nameComercio;
+
     private Object ban;
 
     public CategoryFilter(String ban){
@@ -32,14 +32,6 @@ public class CategoryFilter {
         }
     }
 
-    public void setNameComercio(Object nameComercio) {
-
-        if (nameComercio==null && ban.equals("1")) {
-            this.nameComercio = "";
-        }else{
-            this.nameComercio = nameComercio;
-        }
-    }
 
     public Object getId() {
         return id;
@@ -49,7 +41,4 @@ public class CategoryFilter {
         return nameCategory;
     }
 
-    public Object getNameComercio() {
-        return nameComercio;
-    }
 }

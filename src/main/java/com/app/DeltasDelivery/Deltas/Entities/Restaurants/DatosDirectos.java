@@ -5,9 +5,9 @@ public class DatosDirectos {
     private Object description;
     private Object nameCommerce;
     private Object phone;
-    private Object score = 0;
+    private Object score;
     private Object status;
-    private Object typeCommerce;
+    private Object name;
 
     private Object ban;
 
@@ -51,12 +51,14 @@ public class DatosDirectos {
         }
     }
 
-    public void setTypeCommerce(Object typeCommerce) {
 
-        if (typeCommerce==null && ban.equals("1")) {
-            this.typeCommerce = "";
+
+
+    public void setName(Object name) {
+        if (name==null && ban.equals("1")) {
+            this.name = "";
         }else{
-            this.typeCommerce = typeCommerce;
+            this.name = name;
         }
     }
 
@@ -74,6 +76,8 @@ public class DatosDirectos {
         return nameCommerce;
     }
 
+
+
     public Object getPhone() {
         return phone;
     }
@@ -88,7 +92,8 @@ public class DatosDirectos {
         return status;
     }
 
-    public Object getTypeCommerce() {
-        return typeCommerce;
+
+    public Object getName() {
+        return name;
     }
 }

@@ -1,53 +1,99 @@
 package com.app.DeltasDelivery.Deltas.Logic;
 
-
+//Entities
 import com.app.DeltasDelivery.Deltas.Entities.ResponseGeneral;
 import com.app.DeltasDelivery.Deltas.Entities.Restaurants.Address;
 import com.app.DeltasDelivery.Deltas.Entities.Restaurants.CategoryFilter;
 import com.app.DeltasDelivery.Deltas.Entities.Restaurants.DatosDirectos;
 import com.app.DeltasDelivery.Deltas.Entities.Restaurants.ImagesCommerce;
-import org.json.JSONObject;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 
-
+//Tools
+import org.json.JSONObject;
 import java.util.HashMap;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
+
+import lombok.var;
+import com.app.DeltasDelivery.Deltas.Tools.Loggers;
+import com.google.cloud.firestore.GeoPoint;
 
 @Service
 
 public class RestaurantsLogic {
 
-    public ResponseGeneral restaurants(HashMap body, String env, String ban) {
+    public ResponseGeneral restaurants(HashMap body, String env, String ban) throws JsonProcessingException {
 
         //Traemos el body - Objeto
         System.out.println("Nuestro request - ENTRADA -- JSON");
         System.out.println(body);
+        ResponseGeneral response = new ResponseGeneral();
+
+
+        // ********** Tenemos que poner validaciones para datos obligatorios **********
+        //**********  Tenemos que poner consulta a firebase para extraer banderas (Existe comercio o no)**********
+
+
+        HashMap<String, Object> bodyRestaurantFirebase = new HashMap();
+
 
 
         //Creación
         if (ban.equals("1")) {
-            System.out.println("Creación RESTAURANTE --------------------------------");
-            MapeaDatosDinamicos(body, ban, env);
-            /// MapeaDatosEstaticos ---- SIEMPRE
 
-            // Modificacion
+            System.out.println("Inserción RESTAURANTE -----------------------------");
+
+            // ********** Tenemos que unir 2 cuerpos Dinamicos y Estaticos **********
+            bodyRestaurantFirebase.putAll(MapeaDatosDinamicos(body, ban, env));
+            bodyRestaurantFirebase.putAll(metodos_estaticos(body));
+
+            System.out.println("CUERPO Final DEL RESTAURANTE MAP------ INSERTAR");
+            System.out.println(bodyRestaurantFirebase);
+
+            System.out.println("CUERPO Final DEL RESTAURANTE JSON------ INSERTAR");
+            JSONObject bodyJson1 = new JSONObject(bodyRestaurantFirebase);
+            System.out.println(bodyJson1);
+
+
+            // ********** Mandarlos a conexion firebse creacion con campos requeridos **********
+
+            response.setCode("200");
+            response.setResult("Producto Modificado");
+            response.setResultDescription("Se CREO con normalidad el producto");
+
         }else{
             System.out.println("Modificación RESTAURANTE -----------------------------");
 
-            //Modificamos - Solo campos que queremos modificar
-            MapeaDatosDinamicos(body, ban, env);
-            /// MapeaDatosEstaticos ---- SIEMPRE
+            // ********** Tenemos que unir 2 cuerpos Dinamicos y Estaticos **********
+            bodyRestaurantFirebase.putAll(MapeaDatosDinamicos(body, ban, env));
+            bodyRestaurantFirebase.putAll(metodos_estaticos(body));
+
+            System.out.println("CUERPO Final DEL RESTAURANTE MAP------ MODIFICAR");
+            System.out.println(bodyRestaurantFirebase);
+
+            System.out.println("CUERPO Final DEL RESTAURANTE JSON------ MODIFICAR");
+            JSONObject bodyJson2 = new JSONObject(bodyRestaurantFirebase);
+            System.out.println(bodyJson2);
+
+            // ********** Mandarlos a conexion firebse Modificacion con campos requeridos **********
+
+
+            response.setCode("200");
+            response.setResult("Producto Modificado");
+            response.setResultDescription("Se Modifico con normalidad el producto");
 
         }
 
-        ResponseGeneral response = new ResponseGeneral();
-        response.setCode("200");
-        response.setResult("Producto Creado");
-        response.setResultDescription("Se creo con normalidad el producto");
 
         return response;
     }
 
-    public JSONObject MapeaDatosDinamicos(HashMap<String,String>bodyMap, String ban, String env){
+    //Datos Dinamicos
+    public HashMap<String, Object>  MapeaDatosDinamicos(HashMap<String,String>bodyMap, String ban, String env) throws JsonProcessingException {
 
 
         System.out.println("Map DE ENTRADA -------------------------------");
@@ -57,8 +103,10 @@ public class RestaurantsLogic {
         //------- TodoS los Datos del comercio -----------
 
         // ---------- Con niveles
-        JSONObject restaurant = new JSONObject();
+        HashMap<String, Object> restaurant = new HashMap();
 
+        //Va cada nivel lleva su propia lógica
+        //Se agregan a cuerpo principal del restaurante -------------------RESTAURANTE
         restaurant.put("address",address(bodyMap,ban));
         restaurant.put("categoryFilter",categoryFilter(bodyMap,ban));
         restaurant.put("imagesCommerce",imagesCommerce(bodyMap,ban,env));
@@ -67,20 +115,26 @@ public class RestaurantsLogic {
         // ----------- Directos
         //Convertimos la entrada de Map a JSON
         JSONObject body = new JSONObject(bodyMap);
-
         DatosDirectos datos = new DatosDirectos(ban);
-
+        //Llamamos a datos directos ya que internamente se van
+        // validando para modificar o insertar
         // Sets -- Lleva validaciones null
         datos.setDescription(body.opt("description"));
-        datos.setNameCommerce(body.opt("displayname"));
+        datos.setNameCommerce(body.opt("displayName"));
         datos.setStatus(body.opt("status"));
-        datos.setTypeCommerce(body.opt("typeCommerce"));
+        datos.setName(nameVendor(bodyMap));
+        datos.setPhone(phoneAddress(bodyMap));
 
-        // Gets
+        //Se agregan a cuerpo principal del restaurante -------------------RESTAURANTE
         restaurant.put("description",datos.getDescription());
         restaurant.put("nameCommerce",datos.getNameCommerce());
         restaurant.put("status",datos.getStatus());
-        restaurant.put("typeCommerce",datos.getTypeCommerce());
+        restaurant.put("name",datos.getName());
+        restaurant.put("phone",datos.getPhone());
+
+        //Datos en duro para restaurante
+        restaurant.put("typeCommerce","Restaurante");
+        restaurant.put("score",0);
 
         System.out.println("\n");
         System.out.println("NUESTRA SALIDA EN CONVERSION JSON------------ FIREBASE");
@@ -88,8 +142,10 @@ public class RestaurantsLogic {
 
         // Validamos que nuestro JSON RESTAURANT tenga Datos
 
-        if (restaurant.length()!=0) {
+        if (restaurant.size()!=0) {
+            //Convertimos nuestro json a hashMap
             return restaurant;
+
         }else{
             return null;
         }
@@ -121,8 +177,7 @@ public class RestaurantsLogic {
             addressObj.setTown(body.optJSONObject("address").opt("town"));
             addressObj.setPostalCode(body.optJSONObject("address").opt("postalCode"));
 
-            // Datos directos
-            datos.setPhone(body.optJSONObject("address").opt("phone"));
+
 
         }else{
             // Mandamos plantilla - vacia(requerido para crear restaurant) - La validacion esta dentro del objeto
@@ -133,8 +188,6 @@ public class RestaurantsLogic {
             addressObj.setTown(null);
             addressObj.setPostalCode(null);
 
-            //Datos directos
-            datos.setPhone(null);
         }
 
 
@@ -187,17 +240,6 @@ public class RestaurantsLogic {
         }
 
         // Colocamos un try ya que es un azar saber si ellos mandaran la info - Hasta ese nivel
-        try{
-            //nombre comercio
-            String name_Comercio = String.valueOf(body.optJSONArray("warehousesDetail").optJSONObject
-                    (0).optJSONObject("vendor").opt("name"));
-
-            category.setNameComercio(name_Comercio);
-
-        }catch (Exception e){
-            category.setNameComercio(null);
-
-        }
 
         System.out.println("Imprimimos en JSON ----- Category");
         JSONObject categoryJson = new JSONObject(category);
@@ -237,13 +279,14 @@ public class RestaurantsLogic {
         // Verificamos que existan las llaves para mapear con seguridad
         Boolean s2 = bodyMap.containsKey("storeImages");
         //Tambien la llave debe tener info
-        if (s2 && body.optJSONObject("storeImages").length()!=0) {
+        if (s2 && body.optJSONArray("storeImages").optJSONObject(0).length()!=0) {
+            System.out.println("Entro a la condicion");
             images.setStoreImages(body.optJSONArray("storeImages").optJSONObject(0).opt("url"));
         }else{
             images.setStoreImages(null);
         }
 
-        System.out.println("Imprimimos en JSON ----- Address");
+        System.out.println("Imprimimos en JSON ----- Imagenes");
         JSONObject imagesJson = new JSONObject(images);
         System.out.println(imagesJson);
 
@@ -254,5 +297,160 @@ public class RestaurantsLogic {
             return null;
         }
 
+    }
+
+    public String nameVendor(HashMap<String,String>bodyMap){
+
+        try{
+            JSONObject body = new JSONObject(bodyMap);
+            String namevendor;
+            //nombre comercio
+            namevendor = String.valueOf(body.optJSONArray("warehousesDetail").optJSONObject
+                    (0).optJSONObject("vendor").opt("name"));
+            return namevendor;
+
+        }catch (Exception e){
+            return null;
+
+        }
+
+    }
+
+    public String phoneAddress(HashMap<String,String>bodyMap){
+
+        try{
+            JSONObject body = new JSONObject(bodyMap);
+            String phone;
+            //nombre comercio
+            phone = String.valueOf(body.optJSONObject("address").opt("phone"));
+            return phone;
+
+        }catch (Exception e){
+            return null;
+
+        }
+
+    }
+
+
+    //Datos estaticos
+
+    public static HashMap<String, Object> metodos_estaticos(HashMap<String, Object> body){
+
+        System.out.println("Esta entrando en horarios");
+        System.out.println(body);
+
+        try {
+            HashMap<String, Object> ret = new HashMap<>();
+            String name = (String) body.get("name");
+
+            //Horario
+            HashMap sch = (HashMap) body.get("openingHours");
+            List<HashMap<String, Object>> schedule = (List<HashMap<String, Object>>) sch.get("weekDayOpeningList");
+            schedule = horario(schedule);
+
+            //GeoPoint
+            HashMap<String, Double> geo = (HashMap<String, Double>) body.get("geoPoint");
+            GeoPoint geoPoint = new GeoPoint(geo.get("latitude"), geo.get("longitude"));
+
+            //Obtener nombre desde vendor --- Correción es name del 1° nivel
+            //List listVendor = (List) body.get("warehousesDetail");
+            //HashMap auxVendor = (HashMap) listVendor.get(0);
+            //auxVendor = (HashMap) auxVendor.get("vendor");
+            //String nameVendor = (String) auxVendor.get("name");
+
+            //Lo comento por que no es un dato obligatorio :c
+            //ret.put("name", nameVendor);
+            ret.put("geoPoint", geoPoint);
+            ret.put("schedule", schedule);
+            return ret;
+        } catch (Exception e) {
+            Loggers.infoLog("Metodos estaticos -Tools", e.toString());
+            //Nota. Va a tronar y regresar null cuando no encuentre los datos obligatorios - Horario, geopoint, name(vendor)
+            return null;
+        }
+
+    }
+    public static List<HashMap<String, Object>>horario(List<HashMap<String, Object>> schedule2){
+
+
+        try{
+            List<HashMap<String, Object>> Schedule = new ArrayList<>();
+            for(HashMap<String, Object> el : schedule2){
+                var aux = outp(el);
+                Schedule.add(aux);
+            }
+            return Schedule;
+        } catch(Exception e){
+            Loggers.errorLog("HorarioLogic - Tools", e.toString());
+            return null;
+        }
+
+
+    }
+
+    public static HashMap<String, Object> outp(HashMap<String, Object> input){
+        HashMap<String, Object> body = new HashMap<>();
+
+        HashMap<String, Object> openingTime_hash = (HashMap<String, Object>) input.get("openingTime");
+        String openingTime = (String) openingTime_hash.get("formattedHour");
+
+        HashMap<String, Object> closingTime_hash = (HashMap<String, Object>) input.get("closingTime");
+        String closingTime = (String) closingTime_hash.get("formattedHour");
+
+        String day = (String) input.get("week_day");
+        day = day_funct(day);
+
+        Boolean closed = (Boolean) input.get("closed");
+
+        if(closed){
+            body.put("day", day);
+            body.put("closed", closed);
+            return body;
+        }
+
+        body.put("openingTime", openingTime);
+        body.put("closingTime", closingTime);
+        body.put("day", day);
+        body.put("closed", closed);
+        return body;
+    }
+
+    public static String day_funct(String given_day){
+        String ret = "";
+        switch (given_day) {
+            case "lun.":
+                ret = "Lunes";
+                break;
+
+            case "mar.":
+                ret = "Martes";
+                break;
+
+            case "mie.":
+                ret = "Miércoles";
+                break;
+
+            case "mié.":
+                ret = "Miércoles";
+                break;
+
+            case "jue.":
+                ret = "Jueves";
+                break;
+
+            case "vie.":
+                ret = "Viernes";
+                break;
+            case "sab.":
+                ret = "Sábado";
+                break;
+            case "sáb.":
+                ret = "Sábado";
+                break;
+            default:
+                break;
+        }
+        return ret;
     }
 }

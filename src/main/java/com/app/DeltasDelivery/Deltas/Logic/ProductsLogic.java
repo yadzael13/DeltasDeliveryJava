@@ -12,7 +12,7 @@ import java.util.HashMap;
 @Service
 public class ProductsLogic {
 
-    public ResponseGeneral Products(HashMap body, String env) {
+    public ResponseGeneral products(HashMap body, String env) {
 
         //Traemos el body - Objeto
         System.out.println("Nuestro request - ENTRADA -- JSON");
