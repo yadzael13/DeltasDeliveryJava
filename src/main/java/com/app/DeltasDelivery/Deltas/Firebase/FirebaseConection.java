@@ -21,7 +21,7 @@ public class FirebaseConection {
     private void firestoreInit() throws IOException{
         String projectId = "proyecto-bg-v1";
         try{
-            String reciclable_path = "/home/yadzael/Documentos/Totalplay/Nuevos_Deltas_Java/DeltasDeliveryJava/src/main/java/com/app/DeltasDelivery/Deltas/Firebase";
+            String reciclable_path = "C:/Users/hvargasc/Documents/Nuevos_Deltas_Java/DeltasDeliveryJava/src/main/java/com/app/DeltasDelivery/Deltas/Firebase";
             FileInputStream credentials = new FileInputStream(reciclable_path+"/key.json");
             System.out.println(credentials);
             FirebaseOptions options = FirebaseOptions.builder()
@@ -32,8 +32,10 @@ public class FirebaseConection {
             if(FirebaseApp.getApps().isEmpty()) {
                 FirebaseApp.initializeApp(options);
             }
+
+            Loggers.infoLogger("Firebase Connection", "Conection to project \""+projectId+"\" Sucessfully!");
         } catch(IOException e){
-            Loggers.errorLogger("\n Error en conexion a Firebase"+"\n Proyecto FB = "+projectId,e.toString());
+            Loggers.errorLogger(" Error en conexion a Firebase"+"\n Proyecto FB = "+projectId,e.toString());
         }
             
     }

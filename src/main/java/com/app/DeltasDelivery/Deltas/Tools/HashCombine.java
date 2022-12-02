@@ -34,6 +34,8 @@ public class HashCombine {
                 existing.put(k, v);
             }
             
+        }else{
+            Loggers.infoLogger("CombineLogic - Tools", k+" No existe como llave");
         }
     }
    
