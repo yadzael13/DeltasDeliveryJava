@@ -99,15 +99,22 @@ public class ProductsLogic {
                 FirebaseMethods.delete_product(comercio, categoria, product);
                 resp.setCode("205");
                 resp.setResult("Operacion Exitosa");
-                resp.setResultDescription( "La categoria "+ categoria + " no EXISTE, se elimino el producto a nivel productos");
+                resp.setResultDescription( "El producto "+ product + " no existe a nivel principal, se elimino el producto a nivel productos por categoria");
                 
-            } else{
+            } else if(valid_prod_pricipal && !valid_prod){
+                  //Eliminacion de producto a nivel pirncipal
+                  FirebaseMethods.delete_product_principal(comercio, product);
+                  resp.setCode("205");
+                  resp.setResult("Operacion Exitosa");
+                  resp.setResultDescription( "El porducto "+" no existe a nivel categoria, se ha eliminado a nivel principal");
+                
+            }else{
                 Exception e = new Exception();
                 throw e;
             }
             
         } catch (Exception e) {
-            Loggers.errorLog("ProductLogic -- productDelete", e.getMessage());
+            Loggers.errorLog("ProductLogic -- productDelete", "Producto no encontrado en ningun nivel");
 
             resp.setCode("400");
             resp.setResult("Operacion incorrecta");

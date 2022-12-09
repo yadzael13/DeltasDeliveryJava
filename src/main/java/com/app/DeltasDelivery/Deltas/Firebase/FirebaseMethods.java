@@ -3,6 +3,8 @@ package com.app.DeltasDelivery.Deltas.Firebase;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
+import org.springframework.boot.autoconfigure.kafka.KafkaProperties.Producer;
+
 import com.app.DeltasDelivery.Deltas.Tools.Loggers;
 import com.fasterxml.jackson.databind.JsonMappingException.Reference;
 import com.google.api.core.ApiFuture;
@@ -120,14 +122,15 @@ public interface FirebaseMethods {
      * @throws ExecutionException
      */
     static Boolean exist_cat(String idRest, String idCat) throws InterruptedException, ExecutionException{
-        Boolean ret;
-        DocumentReference aux = getCategory(idRest, idCat);
-        if(aux.get().get().getData() == null){
-            ret = false;
-        } else{
-            ret = true;
+        try {
+            DocumentReference aux = getCategory(idRest, idCat);
+        if(!(aux.get().get().getData() == null)){
+            return true;
         }
-        return ret;
+        } catch (Exception e) {
+            Loggers.errorLog("Validar existencia de comercio", e.getMessage());
+        }
+       return false;
     }
 
     /** Verificar si existe en fb o no el producto  con categoria
@@ -137,14 +140,15 @@ public interface FirebaseMethods {
      * @throws ExecutionException
      */
     static Boolean exist_prod(String idRest, String idCat, String idProd) throws InterruptedException, ExecutionException{
-        Boolean ret;
-        DocumentReference aux = getProduct(idRest, idCat, idProd);
-        if(aux.get().get().getData() == null){
-            ret = false;
-        } else{
-            ret = true;
+        try {
+            DocumentReference aux = getProduct(idRest,idCat,idProd);
+        if(!(aux.get().get().getData() == null)){
+            return true;
         }
-        return ret;
+        } catch (Exception e) {
+            Loggers.errorLog("Validar existencia de comercio", e.getMessage());
+        }
+       return false;
     }
 
     //++------------------------------------------------- Producto a nivel principal
@@ -176,14 +180,15 @@ public interface FirebaseMethods {
      * @throws ExecutionException
      */
     static Boolean exist_prod_principal(String idRest, String idProd) throws InterruptedException, ExecutionException{
-        Boolean ret;
-        DocumentReference aux = getProduct_principal(idRest, idProd);
-        if(aux.get().get().getData() == null){
-            ret = false;
-        } else{
-            ret = true;
+        try {
+            DocumentReference aux = getProduct_principal(idRest, idProd);
+        if(!(aux.get().get().getData() == null)){
+            return true;
         }
-        return ret;
+        } catch (Exception e) {
+            Loggers.errorLog("Validar existencia de comercio", e.getMessage());
+        }
+       return false;
     }
 
 
