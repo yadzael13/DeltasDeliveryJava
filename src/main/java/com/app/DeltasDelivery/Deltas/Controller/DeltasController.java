@@ -144,7 +144,44 @@ public class DeltasController {
                
             }
 
-           
+        @GetMapping("/delete_product")
+        public ResponseEntity <?> deleteProduct(
+                @RequestBody HashMap<String, String> body
+                // Mando a funcion body, env
+        ){
+            
+            ResponseGeneral resp = new ResponseGeneral();
+            try {
+                String[] obligatorios = {"id_Producto", "id_Categoria", "id_Comercio"};
+                for(String ob : obligatorios){
+                    if(!body.containsKey(ob)){
+                     
+                         resp.setCode("404");
+                         resp.setResult("No se pudo consultar la petición");
+                         resp.setResultDescription("Favor de validar "+ob+" del servicio");
+                         int code = Integer.parseInt(resp.getCode());
+                         return ResponseEntity.status(HttpStatus.valueOf(code)).body(resp);
+                    }
+                }
+                String nameProd = body.get("id_Producto");
+                String nameCat = body.get("id_Categoria");
+                String nameCom = body.get("id_Comercio");
+                resp = productsLogic.productDelete(nameCom, nameCat, nameProd);
+
+                return ResponseEntity.status(HttpStatus.CREATED).body(resp);
+            } catch (Exception e) {
+                Loggers.errorLog("Paths, delete_product", e.getMessage());
+                resp.setCode("400");
+                resp.setResult("Operacion incorrecta");
+                resp.setResultDescription("Hubo un error al eliminar el producto Favor de verificar datos");
+                return ResponseEntity.status(400).body(resp);
+            }
+            
+            
+    
+            
+    
+        }
     
 
 }

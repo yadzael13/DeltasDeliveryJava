@@ -1,7 +1,7 @@
 package com.app.DeltasDelivery.Deltas.Firebase;
 
 import java.util.Map;
-
+import java.util.concurrent.ExecutionException;
 
 import com.app.DeltasDelivery.Deltas.Tools.Loggers;
 import com.fasterxml.jackson.databind.JsonMappingException.Reference;
@@ -52,7 +52,7 @@ public interface FirebaseMethods {
         
     }
     
-    /** Obtener producto por id
+    /** Obtener producto nivel categoria por id
      * @param idRestaurante
      * @param category
      * @param idProduct
@@ -88,10 +88,102 @@ public interface FirebaseMethods {
                                 .document(idCat);
             return ret;
         }catch(Exception e){
-            Loggers.errorLog("Error en firebase- getPromotions()",e.toString());
+            Loggers.errorLog("Error en firebase- getCategory()",e.toString());
             return null;
         }
        
+    }
+
+ //-------------------------------------- METODOS PARA VERIFICAR SI EXISTE -----------------------------------//
+    /** Verificar si existe en fb o no el comercio
+     * @param id -- Id de restaurante
+     * @return True si existe, False si no
+     * @throws InterruptedException
+     * @throws ExecutionException
+     */
+    static Boolean exist_com(String id) throws InterruptedException, ExecutionException{
+        try {
+            DocumentReference aux = getRestaurante(id);
+        if(!(aux.get().get().getData() == null)){
+            return true;
+        }
+        } catch (Exception e) {
+            Loggers.errorLog("Validar existencia de comercio", e.getMessage());
+        }
+       return false;
+    }
+
+     /** Verificar si existe en fb o no la categoria
+     * @param id -- Id de restaurante, id cat
+     * @return True si existe, False si no
+     * @throws InterruptedException
+     * @throws ExecutionException
+     */
+    static Boolean exist_cat(String idRest, String idCat) throws InterruptedException, ExecutionException{
+        Boolean ret;
+        DocumentReference aux = getCategory(idRest, idCat);
+        if(aux.get().get().getData() == null){
+            ret = false;
+        } else{
+            ret = true;
+        }
+        return ret;
+    }
+
+    /** Verificar si existe en fb o no el producto  con categoria
+     * @param id -- Id de restaurante, id cat, id prod
+     * @return True si existe, False si no
+     * @throws InterruptedException
+     * @throws ExecutionException
+     */
+    static Boolean exist_prod(String idRest, String idCat, String idProd) throws InterruptedException, ExecutionException{
+        Boolean ret;
+        DocumentReference aux = getProduct(idRest, idCat, idProd);
+        if(aux.get().get().getData() == null){
+            ret = false;
+        } else{
+            ret = true;
+        }
+        return ret;
+    }
+
+    //++------------------------------------------------- Producto a nivel principal
+        /** Obtener producto nivel principal por id
+     * @param idRestaurante
+     * @param category
+     * @param idProduct
+     */
+    static DocumentReference getProduct_principal(String idRestaurante, String product ){
+        try{
+            var ret = firebase.getFirestore()
+                                .collection(col_name)
+                                .document(idRestaurante)
+                                .collection("products")
+                                .document(product);
+                               
+            return ret;
+        }catch(Exception e){
+            Loggers.errorLog("Error en firebase- getProduct_rest() -[Nivel Principal]-",e.toString());
+            return null;
+        }
+       
+    }
+
+    /** Verificar si existe en fb o no el producto  con categoria
+     * @param id -- Id de restaurante, id cat, id prod
+     * @return True si existe, False si no
+     * @throws InterruptedException
+     * @throws ExecutionException
+     */
+    static Boolean exist_prod_principal(String idRest, String idProd) throws InterruptedException, ExecutionException{
+        Boolean ret;
+        DocumentReference aux = getProduct_principal(idRest, idProd);
+        if(aux.get().get().getData() == null){
+            ret = false;
+        } else{
+            ret = true;
+        }
+        return ret;
     }
 
 
@@ -200,6 +292,44 @@ public interface FirebaseMethods {
             
         } catch (Exception e) {
             Loggers.errorLog("Firebase Metohds - Delete Restaruant", e.toString());
+        }
+    }
+
+
+    
+    /**
+     * @param rest
+     * @param cat
+     * @param prod_name
+     */
+    static void delete_product(String rest, String cat, String prod_name){
+        try {
+            var reference = getProduct(rest, cat, prod_name);
+            
+            reference.delete();
+            Loggers.infoLog("Delete Product - Firebase Methods", "Se ha eliminado el Producto: "+prod_name+"\n -De la categoria: "+cat+ "\n -Del Restaurante "+rest);
+            
+            
+        } catch (Exception e) {
+            Loggers.errorLog("Firebase Metohds - Delete Product", e.toString());
+        }
+    }
+
+   
+    /**
+     * @param rest
+     * @param prod_name
+     */
+    static void delete_product_principal(String rest, String prod_name){
+        try {
+            var reference = getProduct_principal(rest, prod_name);
+            
+            reference.delete();
+            Loggers.infoLog("Delete Product_pricipal - Firebase Methods", "Se ha eliminado el Producto: "+prod_name+" de la categoria: "+"\n -Del Restaurante "+rest);
+            
+            
+        } catch (Exception e) {
+            Loggers.errorLog("Firebase Metohds - Delete Product_Principal", e.toString());
         }
     }
     //------------------------------------------------------------------------------------------------------

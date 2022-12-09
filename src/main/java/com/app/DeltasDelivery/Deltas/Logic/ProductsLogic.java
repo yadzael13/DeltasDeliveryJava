@@ -2,6 +2,8 @@ package com.app.DeltasDelivery.Deltas.Logic;
 
 import com.app.DeltasDelivery.Deltas.Entities.Products.ImagesProduct;
 import com.app.DeltasDelivery.Deltas.Entities.Products.PlantillaProduct;
+import com.app.DeltasDelivery.Deltas.Firebase.FirebaseMethods;
+import com.app.DeltasDelivery.Deltas.Tools.Loggers;
 import com.app.DeltasDelivery.Deltas.Entities.ResponseGeneral;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
@@ -74,5 +76,43 @@ public class ProductsLogic {
         JSONObject json = new JSONObject(platilla);
         System.out.println(json);
         return null;
+    }
+
+    public ResponseGeneral productDelete(String comercio, String categoria, String product){
+        ResponseGeneral resp = new ResponseGeneral();
+        try {
+            Boolean valid_prod_pricipal =FirebaseMethods.exist_prod_principal(comercio, product);
+            Boolean valid_prod = FirebaseMethods.exist_prod(comercio, categoria, product);
+
+            if(valid_prod_pricipal && valid_prod){
+                //Eliminacion de producto a nivel principal
+                FirebaseMethods.delete_product_principal(comercio, product);
+                
+                //Eliminacion de producto a nivel categoria
+                FirebaseMethods.delete_product(comercio, categoria, product);
+                resp.setCode("200");
+                resp.setResult("Operacion Exitosa");
+                resp.setResultDescription("Se ha eliminado el producto correctamente");
+                
+            } else if(!valid_prod_pricipal && valid_prod){
+                //Eliminacion de producto a nivel categoria
+                FirebaseMethods.delete_product(comercio, categoria, product);
+                resp.setCode("205");
+                resp.setResult("Operacion Exitosa");
+                resp.setResultDescription( "La categoria "+ categoria + " no EXISTE, se elimino el producto a nivel productos");
+                
+            } else{
+                Exception e = new Exception();
+                throw e;
+            }
+            
+        } catch (Exception e) {
+            Loggers.errorLog("ProductLogic -- productDelete", e.getMessage());
+
+            resp.setCode("400");
+            resp.setResult("Operacion incorrecta");
+            resp.setResultDescription("Hubo un error al eliminar el producto Favor de verificar datos");
+        }
+        return resp;
     }
 }
