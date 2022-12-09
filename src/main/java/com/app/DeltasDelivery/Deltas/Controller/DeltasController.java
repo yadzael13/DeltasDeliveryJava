@@ -37,7 +37,7 @@ public class DeltasController {
     CategoriesLogic categoriesLogic;
 
 
-    @GetMapping("/create_restaurant")
+    @PostMapping("/create_restaurant")
     public ResponseEntity <?> createRestaurant(
             @RequestBody HashMap<String, Object> body,
             @RequestHeader("env") String env,
@@ -76,7 +76,7 @@ public class DeltasController {
         }
     }
 
-    @GetMapping("/create_category")
+    @PostMapping("/create_category")
     public ResponseEntity<?> createCategory(
             @RequestBody Category body,
             @RequestHeader("env") String env,
@@ -106,7 +106,7 @@ public class DeltasController {
     }
 
 
-    @GetMapping("/create_product")
+    @PostMapping("/create_product")
     public ResponseEntity <?> createProduct(
             @RequestBody HashMap body,
             @RequestHeader("env") String env
@@ -144,7 +144,7 @@ public class DeltasController {
                
             }
 
-        @GetMapping("/delete_product")
+        @PostMapping("/delete_product")
         public ResponseEntity <?> deleteProduct(
                 @RequestBody HashMap<String, String> body
                 // Mando a funcion body, env
@@ -176,8 +176,46 @@ public class DeltasController {
                 resp.setResultDescription("Hubo un error al eliminar el producto Favor de verificar datos");
                 return ResponseEntity.status(400).body(resp);
             }
+            }
             
             
+
+            @PostMapping("/delete_category")
+            public ResponseEntity <?> deleteCategory(
+                    @RequestBody HashMap<String, String> body
+                    // Mando a funcion body, env
+            ){
+                
+                ResponseGeneral resp = new ResponseGeneral();
+                try {
+                    String[] obligatorios = {"id_commerce", "id_category"};
+                    for(String ob : obligatorios){
+                        if(!body.containsKey(ob)){
+                         
+                             resp.setCode("404");
+                             resp.setResult("No se pudo consultar la petición");
+                             resp.setResultDescription("Favor de validar "+ob+" del servicio");
+                             int code = Integer.parseInt(resp.getCode());
+                             return ResponseEntity.status(HttpStatus.valueOf(code)).body(resp);
+                        }
+                    }
+                    String nameCat = body.get("id_category");
+                    String nameCom = body.get("id_commerce");
+                    resp = categoriesLogic.categoryDelete(nameCom, nameCat);
+                    int code = Integer.parseInt(resp.getCode());
+                    if(code == 404 || code == 205){
+                        code = 400;
+                    }
+                    return ResponseEntity.status(HttpStatus.valueOf(code)).body(resp);
+                } catch (Exception e) {
+                    Loggers.errorLog("Paths, Delete Category", e.getMessage());
+                    resp.setCode("400");
+                    resp.setResult("Operacion incorrecta");
+                    resp.setResultDescription("Hubo un error al eliminar el producto Favor de verificar datos");
+                    return ResponseEntity.status(400).body(resp);
+                }
+                
+                
     
             
     

@@ -106,7 +106,7 @@ public class ProductsLogic {
                   FirebaseMethods.delete_product_principal(comercio, product);
                   resp.setCode("205");
                   resp.setResult("Operacion Exitosa");
-                  resp.setResultDescription( "El porducto "+" no existe a nivel categoria, se ha eliminado a nivel principal");
+                  resp.setResultDescription( "El producto "+" no existe a nivel categoria, se ha eliminado a nivel principal");
                 
             }else{
                 Exception e = new Exception();

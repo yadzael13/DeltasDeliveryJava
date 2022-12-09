@@ -337,6 +337,19 @@ public interface FirebaseMethods {
             Loggers.errorLog("Firebase Metohds - Delete Product_Principal", e.toString());
         }
     }
+
+    static void delete_category(String idRest, String idCat){
+        try {
+            var reference = getCategory(idRest, idCat);
+            
+            reference.delete();
+            Loggers.infoLog("Delete category - Firebase Methods", "Se ha eliminado la categoria: "+idCat+"\n -Del comercio: "+ idRest);
+            
+            
+        } catch (Exception e) {
+            Loggers.errorLog("Firebase Metohds - Delete category", e.toString());
+        }
+    }
     //------------------------------------------------------------------------------------------------------
 
 
