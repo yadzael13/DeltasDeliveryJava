@@ -2,6 +2,7 @@ package com.app.DeltasDelivery.Deltas.Controller;
 
 //Librerias básicas
 import com.app.DeltasDelivery.Deltas.Entities.Category.Category;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import com.app.DeltasDelivery.Deltas.Logic.CategoriesLogic;
 //Herramientas
 import lombok.var;
 import java.util.HashMap;
+
 import com.app.DeltasDelivery.Deltas.Tools.Loggers;
 
 
@@ -37,7 +39,7 @@ public class DeltasController {
 
     @GetMapping("/create_restaurant")
     public ResponseEntity <?> createRestaurant(
-            @RequestBody HashMap body,
+            @RequestBody HashMap<String, Object> body,
             @RequestHeader("env") String env,
             @RequestHeader("ban") String ban
             // Mando a funcion body, env
@@ -45,7 +47,18 @@ public class DeltasController {
         try {
             // ********* Tenemos que colocar loggs de los bodys que entran **********
             Loggers.infoLog("/create_restaurant","Request ="+body.toString());
-
+            // ******** Lógica para obligatorios
+            String[] obligatorios = {"geoPoint", "name", "openingHours"};
+            for(String ob : obligatorios){
+                if(!body.containsKey(ob)){
+                     ResponseGeneral resp = new ResponseGeneral();
+                     resp.setCode("400");
+                     resp.setResult("No se ha creado el restaurante");
+                     resp.setResultDescription("Es necesario agregar "+ob);
+                     int code = Integer.parseInt(resp.getCode());
+                     return ResponseEntity.status(HttpStatus.valueOf(code)).body(resp);
+                }
+            }
             var result = restaurantsLogic.restaurants(body,env,ban);
 
             // ------------ MEJORA obtenermos CODE en string y en el controlador se convierte en HttpStatus
@@ -106,9 +119,32 @@ public class DeltasController {
 
     }
 
+    @PostMapping("/delete_restaurant")
+    public ResponseEntity<?> deleteRestaurante(
+        @RequestBody HashMap<String, String> body
+            ){
+                ResponseGeneral result = new ResponseGeneral();
+                try {
+                    String name = (String) body.get("name");
+                     result = restaurantsLogic.restaurantDelete(name);
+                    if(result.getCode().equals("400")){
+                        return ResponseEntity.status(HttpStatus.valueOf(400)).body(result);
+                    }
+                    return ResponseEntity.status(HttpStatus.CREATED).body(result);
+                    
+                } catch (Exception e) {
+                    result.setCode("400");
+                    result.setResult("Operacion con error");
+                    result.setResultDescription("Eliminacion de restaurante fallida");
+                    return  ResponseEntity.status(HttpStatus.valueOf(400)).body(result);
+                }
+                   
+                    
+                
+               
+            }
 
-
-
-
+           
+    
 
 }

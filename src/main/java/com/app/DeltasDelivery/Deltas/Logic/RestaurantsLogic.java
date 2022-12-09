@@ -6,9 +6,9 @@ import com.app.DeltasDelivery.Deltas.Entities.Restaurants.Address;
 import com.app.DeltasDelivery.Deltas.Entities.Restaurants.CategoryFilter;
 import com.app.DeltasDelivery.Deltas.Entities.Restaurants.DatosDirectos;
 import com.app.DeltasDelivery.Deltas.Entities.Restaurants.ImagesCommerce;
-
+import com.app.DeltasDelivery.Deltas.Firebase.FirebaseMethods;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.springframework.stereotype.Service;
 
 //Tools
@@ -16,7 +16,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Map;
+
 
 import lombok.var;
 import com.app.DeltasDelivery.Deltas.Tools.Loggers;
@@ -24,9 +24,10 @@ import com.google.cloud.firestore.GeoPoint;
 
 @Service
 
-public class RestaurantsLogic {
+public class RestaurantsLogic implements FirebaseMethods{
 
-    public ResponseGeneral restaurants(HashMap body, String env, String ban) throws JsonProcessingException {
+
+    public ResponseGeneral restaurants(HashMap<String, Object> body, String env, String ban) throws JsonProcessingException {
 
         //Traemos el body - Objeto
         System.out.println("Nuestro request - ENTRADA -- JSON");
@@ -53,6 +54,10 @@ public class RestaurantsLogic {
 
             System.out.println("CUERPO Final DEL RESTAURANTE MAP------ INSERTAR");
             System.out.println(bodyRestaurantFirebase);
+            
+            //Creación en Firebase
+            String restaurant_name = (String) body.get("name");
+            create_restaurante(restaurant_name, bodyRestaurantFirebase);
 
             System.out.println("CUERPO Final DEL RESTAURANTE JSON------ INSERTAR");
             JSONObject bodyJson1 = new JSONObject(bodyRestaurantFirebase);
@@ -91,13 +96,44 @@ public class RestaurantsLogic {
 
         return response;
     }
-
+   
+    /** Eliminar Restaurante
+     * @param name --- Nombre de restaurante
+     * @return Objeto tipo REsponseGeneral
+     */
+    public ResponseGeneral restaurantDelete(String name){
+        ResponseGeneral resp = new ResponseGeneral();
+        try {
+            var reference = FirebaseMethods.getRestaurante(name);
+            if(reference.get().get().getData()==null){
+                resp.setCode("205");
+                resp.setResult("Operacion con error");
+                resp.setResultDescription("Error, el Restaurante a eliminar no existe");
+                return resp;
+            }
+            else{
+                FirebaseMethods.delete_restaurant(name);
+                resp.setCode("200");
+                resp.setResult("Operacion Exitosa");
+                resp.setResultDescription("Se ha eliminado el Restaurante correctamente");
+                return resp;
+            }
+            
+        } catch (Exception e) {
+            Loggers.errorLog("Restaurant-Logic --> restauranteDelete()", e.toString());
+            resp.setCode("400");
+            resp.setResult("Operacion con error");
+            resp.setResultDescription("Eliminacion de restaurante fallida");
+            return resp;
+        }
+    }
+   
     //Datos Dinamicos
-    public HashMap<String, Object>  MapeaDatosDinamicos(HashMap<String,String>bodyMap, String ban, String env) throws JsonProcessingException {
+    public HashMap<String, Object>  MapeaDatosDinamicos(HashMap body2, String ban, String env) throws JsonProcessingException {
 
 
         System.out.println("Map DE ENTRADA -------------------------------");
-        System.out.println(bodyMap);
+        System.out.println(body2);
 
 
         //------- TodoS los Datos del comercio -----------
@@ -107,14 +143,14 @@ public class RestaurantsLogic {
 
         //Va cada nivel lleva su propia lógica
         //Se agregan a cuerpo principal del restaurante -------------------RESTAURANTE
-        restaurant.put("address",address(bodyMap,ban));
-        restaurant.put("categoryFilter",categoryFilter(bodyMap,ban));
-        restaurant.put("imagesCommerce",imagesCommerce(bodyMap,ban,env));
+        restaurant.put("address",address(body2,ban));
+        restaurant.put("categoryFilter",categoryFilter(body2,ban));
+        restaurant.put("imagesCommerce",imagesCommerce(body2,ban,env));
 
 
         // ----------- Directos
         //Convertimos la entrada de Map a JSON
-        JSONObject body = new JSONObject(bodyMap);
+        JSONObject body = new JSONObject(body2);
         DatosDirectos datos = new DatosDirectos(ban);
         //Llamamos a datos directos ya que internamente se van
         // validando para modificar o insertar
@@ -122,8 +158,8 @@ public class RestaurantsLogic {
         datos.setDescription(body.opt("description"));
         datos.setNameCommerce(body.opt("displayName"));
         datos.setStatus(body.opt("status"));
-        datos.setName(nameVendor(bodyMap));
-        datos.setPhone(phoneAddress(bodyMap));
+        datos.setName(nameVendor(body2));
+        datos.setPhone(phoneAddress(body2));
 
         //Se agregan a cuerpo principal del restaurante -------------------RESTAURANTE
         restaurant.put("description",datos.getDescription());

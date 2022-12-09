@@ -4,9 +4,13 @@ import java.util.Map;
 
 
 import com.app.DeltasDelivery.Deltas.Tools.Loggers;
+import com.fasterxml.jackson.databind.JsonMappingException.Reference;
+import com.google.api.core.ApiFuture;
+import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.firestore.DocumentReference;
 
 import com.google.cloud.firestore.SetOptions;
+import com.google.cloud.firestore.WriteResult;
 
 import lombok.var;
 
@@ -98,7 +102,7 @@ public interface FirebaseMethods {
      * @param idRestaurante
      * @param body
      */
-    static void create_restaurante(String idRestaurante, Map<String, Object> body){
+     default void create_restaurante(String idRestaurante, Map<String, Object> body){
         try{
             var reference = getRestaurante(idRestaurante);
             reference.set(body);
@@ -180,6 +184,26 @@ public interface FirebaseMethods {
     }
 
     //----------------------------------------------------------------------------
+
+    //-------------------------------------- METODOS PARA ELIMINAR  ---------------------------------------//
+    /**
+     * @param rest_name
+     * @return
+     */
+    static void delete_restaurant(String rest_name){
+        try {
+            var reference = getRestaurante(rest_name);
+            
+            reference.delete();
+            Loggers.infoLog("Delete Restaurant - Firebase Methods", "Se ha eliminado el restaurante: "+rest_name);
+            
+            
+        } catch (Exception e) {
+            Loggers.errorLog("Firebase Metohds - Delete Restaruant", e.toString());
+        }
+    }
+    //------------------------------------------------------------------------------------------------------
+
 
     
 }

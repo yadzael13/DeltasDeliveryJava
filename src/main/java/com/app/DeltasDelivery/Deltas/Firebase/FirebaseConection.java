@@ -7,7 +7,7 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.cloud.FirestoreClient;
 
-import ch.qos.logback.classic.Logger;
+
 
 import org.springframework.stereotype.Service;
 
