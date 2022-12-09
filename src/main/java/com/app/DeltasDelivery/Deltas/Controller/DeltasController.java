@@ -34,8 +34,8 @@ public class DeltasController {
     @Autowired
     CategoriesLogic categoriesLogic;
 
-
-    @GetMapping("/create_restaurant")
+    // TERMINA BRENDA ----- CREA Y MODIFICA RESTAURANTE
+    @PostMapping ("/create_restaurant")
     public ResponseEntity <?> createRestaurant(
             @RequestBody HashMap body,
             @RequestHeader("env") String env,
@@ -43,6 +43,10 @@ public class DeltasController {
             // Mando a funcion body, env
     ){
         try {
+
+            // ********** Tenemos que poner validaciones para datos obligatorios **********
+
+
             // ********* Tenemos que colocar loggs de los bodys que entran **********
             Loggers.infoLog("/create_restaurant","Request ="+body.toString());
 
@@ -63,7 +67,9 @@ public class DeltasController {
         }
     }
 
-    @GetMapping("/create_category")
+
+    /// TERMINA BRENDA -------------------------------- CREA Y MODIFICA CATEGORIA
+    @PostMapping("/create_category")
     public ResponseEntity<?> createCategory(
             @RequestBody Category body,
             @RequestHeader("env") String env,
@@ -93,7 +99,8 @@ public class DeltasController {
     }
 
 
-    @GetMapping("/create_product")
+    // PENDIENTE --------------------------------------- CREA Y MODIFICA PRODUCTO
+    @PostMapping("/create_product")
     public ResponseEntity <?> createProduct(
             @RequestBody HashMap body,
             @RequestHeader("env") String env
@@ -101,7 +108,6 @@ public class DeltasController {
     ){
 
         var result = productsLogic.products(body,env);
-
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
 
     }
