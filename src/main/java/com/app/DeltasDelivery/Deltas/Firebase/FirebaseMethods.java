@@ -1,5 +1,8 @@
 package com.app.DeltasDelivery.Deltas.Firebase;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
@@ -9,6 +12,7 @@ import com.app.DeltasDelivery.Deltas.Tools.Loggers;
 import com.fasterxml.jackson.databind.JsonMappingException.Reference;
 import com.google.api.core.ApiFuture;
 import com.google.api.gax.rpc.NotFoundException;
+
 import com.google.cloud.firestore.DocumentReference;
 
 import com.google.cloud.firestore.SetOptions;
@@ -94,6 +98,23 @@ public interface FirebaseMethods {
             return null;
         }
        
+    }
+
+    static HashMap<String, Object> getPromotion_product(String idRest, String idProd){
+                HashMap<String, Object> ret = new HashMap<>();
+                try {
+                    HashMap<String, Object> aux = new HashMap<>();
+                    DocumentReference ref = getProduct_principal(idRest, idProd);
+                    aux = (HashMap<String, Object>) ref.get().get().getData();
+                    Object prom = (Object) aux.get("promocion_Producto");
+                    Boolean promStatus = (Boolean) aux.get("status_promocion");
+                    ret.put("promocion_Producto", prom);
+                    ret.put("status_promocion", promStatus);
+
+                } catch (Exception e) {
+                    Loggers.errorLog("Firebase Methods -- getPromotion_product", e.getMessage());
+                }
+                return ret;
     }
 
  //-------------------------------------- METODOS PARA VERIFICAR SI EXISTE -----------------------------------//
@@ -232,7 +253,7 @@ public interface FirebaseMethods {
         
     }
 
-       /** Crear Producto 
+       /** Crear o actualizarProducto 
      * @param idRestaurante
      * @param body
      */
@@ -283,9 +304,9 @@ public interface FirebaseMethods {
     //----------------------------------------------------------------------------
 
     //-------------------------------------- METODOS PARA ELIMINAR  ---------------------------------------//
-    /**
+
+    /**Eliminar restaurante
      * @param rest_name
-     * @return
      */
     static void delete_restaurant(String rest_name){
         try {
@@ -302,7 +323,7 @@ public interface FirebaseMethods {
 
 
     
-    /**
+    /** Eliminar prodicto a nivel categoria
      * @param rest
      * @param cat
      * @param prod_name
@@ -321,7 +342,7 @@ public interface FirebaseMethods {
     }
 
    
-    /**
+    /**Eliminar producto a nivel principal
      * @param rest
      * @param prod_name
      */
@@ -338,6 +359,11 @@ public interface FirebaseMethods {
         }
     }
 
+
+    /**Eliminar categoría
+     * @param idRest
+     * @param idCat
+     */
     static void delete_category(String idRest, String idCat){
         try {
             var reference = getCategory(idRest, idCat);
@@ -348,6 +374,25 @@ public interface FirebaseMethods {
             
         } catch (Exception e) {
             Loggers.errorLog("Firebase Metohds - Delete category", e.toString());
+        }
+    }
+
+
+    /**Delete promotion -- Nivel producto
+     * @param idRest
+     * @param idProd
+     */
+    static void delete_promotion(String idRest, String idProd){
+        try {
+            HashMap<String, Object> aux = new HashMap<>();
+            List<Object> l = new ArrayList<>();
+            aux.put("promocion_Producto", l);
+            aux.put("status_promocion", false);
+            var p = getProduct_principal(idRest, idProd);
+            p.set(aux,SetOptions.merge());
+            Loggers.infoLog("Firebase Methods - delete promotion", "Se ha eliminado la promocion del producto: "+idProd+"\n--Del Restaurante: "+idRest);
+        } catch (Exception e) {
+            Loggers.errorLog("Firebase Methods -- delete_promotion[nivel principal]", e.toString());
         }
     }
     //------------------------------------------------------------------------------------------------------
