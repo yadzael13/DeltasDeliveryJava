@@ -214,12 +214,32 @@ public class DeltasController {
                     resp.setResultDescription("Hubo un error al eliminar el producto Favor de verificar datos");
                     return ResponseEntity.status(400).body(resp);
                 }
-                
-                
-    
-            
-    
         }
-    
+        @PostMapping("/delete_promotion")
+        public ResponseEntity <?>  deletePromotions(
+            @RequestBody HashMap<String, Object> body
+             ){
+                ResponseGeneral resp = new ResponseGeneral();
+            try {
+                //Logica promocion por producto con cat
+                //Logica promoicon producto directo
+                int code = Integer.parseInt(resp.getCode());
+
+                if(code == 205){
+                    code = 200;
+                }
+                return ResponseEntity.status(code).body(resp);
+
+                
+            } catch (Exception e) {
+                Loggers.errorLog("Paths -- delete_promotion", e.toString());
+                resp.setCode("500");
+                resp.setResult("Ha ocurrido un error");
+                resp.setResultDescription("Error al eliminar promocion, verifique datos");
+
+                return ResponseEntity.status(HttpStatus.valueOf(400)).body(resp);
+            }
+
+        }
 
 }

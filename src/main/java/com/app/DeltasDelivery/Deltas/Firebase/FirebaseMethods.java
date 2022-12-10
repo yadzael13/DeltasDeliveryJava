@@ -6,17 +6,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
-import org.springframework.boot.autoconfigure.kafka.KafkaProperties.Producer;
 
 import com.app.DeltasDelivery.Deltas.Tools.Loggers;
-import com.fasterxml.jackson.databind.JsonMappingException.Reference;
-import com.google.api.core.ApiFuture;
-import com.google.api.gax.rpc.NotFoundException;
+
 
 import com.google.cloud.firestore.DocumentReference;
 
 import com.google.cloud.firestore.SetOptions;
-import com.google.cloud.firestore.WriteResult;
+
 
 import lombok.var;
 
