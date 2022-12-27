@@ -1,17 +1,17 @@
 package com.app.DeltasDelivery.Deltas.Entities.Restaurants;
 
 public class Address {
-    private Object formattedAddress;
+    public Object formattedAddress;
 
-    private Object postalCode;
+    public Object postalCode;
 
-    private Object streetname;
+    public Object streetname;
 
-    private Object streetnumber;
+    public Object streetnumber;
 
-    private Object town;
+    public Object town;
 
-    private String ban;
+    public String ban;
 
     public Address(String ban){
         this.ban= ban;

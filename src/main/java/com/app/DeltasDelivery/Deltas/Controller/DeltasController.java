@@ -42,13 +42,19 @@ public class DeltasController {
             @RequestHeader("ban") String ban
             // Mando a funcion body, env
     ){
+
+        ResponseGeneral res = new ResponseGeneral();
+
         try {
 
-            // ********** Tenemos que poner validaciones para datos obligatorios **********
-
-
             // ********* Tenemos que colocar loggs de los bodys que entran **********
-            Loggers.infoLog("/create_restaurant","Request ="+body.toString());
+            Loggers.infoLog("/create_restaurant","Request = "+body.toString());
+
+            // ********** Validacion Datos Obligatorios **********
+
+
+
+
 
             var result = restaurantsLogic.restaurants(body,env,ban);
 
@@ -58,8 +64,8 @@ public class DeltasController {
 
         }catch (Exception e){
             // ********* Tenemos que colocar obtener error personalizado **********
-            Loggers.errorLog("create_restaurant",e.toString());
-            ResponseGeneral res = new ResponseGeneral();
+            Loggers.errorLog("create_restaurant - Controlador ",e.toString());
+
             res.setCode("500");
             res.setResult("Error en la operación");
             res.setResultDescription("Favor de validar Servicio");

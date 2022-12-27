@@ -1,18 +1,18 @@
 package com.app.DeltasDelivery.Deltas.Entities.Restaurants;
 
 public class ImagesCommerce {
-    private Object logo192Wx192H;
+    public Object logo192Wx192H;
 
-    private Object mapIcon;
+    public Object mapIcon;
 
-    private Object storeImages;
+    public Object storeImages;
 
-    private Object ban;
+    public Object ban;
 
-    private Object env;
+    public Object env;
 
-    private String dominioProd = "https://backoffice.c6exvb10-totalplay1-p1-public.model-t.cc.commerce.ondemand.com";
-    private String dominioQa = "https://backoffice.c6exvb10-totalplay1-s1-public.model-t.cc.commerce.ondemand.com";
+    public String dominioProd = "https://backoffice.c6exvb10-totalplay1-p1-public.model-t.cc.commerce.ondemand.com";
+    public String dominioQa = "https://backoffice.c6exvb10-totalplay1-s1-public.model-t.cc.commerce.ondemand.com";
 
     public ImagesCommerce(String ban, String env) {
         this.ban= ban;

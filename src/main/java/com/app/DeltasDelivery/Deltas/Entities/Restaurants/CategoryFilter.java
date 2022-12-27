@@ -2,11 +2,11 @@ package com.app.DeltasDelivery.Deltas.Entities.Restaurants;
 
 public class CategoryFilter {
 
-    private Object id;
+    public Object id;
 
-    private Object nameCategory;
+    public Object nameCategory;
 
-    private Object ban;
+    public Object ban;
 
     public CategoryFilter(String ban){
         this.ban= ban;

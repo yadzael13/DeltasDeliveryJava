@@ -7,8 +7,13 @@ import com.app.DeltasDelivery.Deltas.Entities.Restaurants.CategoryFilter;
 import com.app.DeltasDelivery.Deltas.Entities.Restaurants.DatosDirectos;
 import com.app.DeltasDelivery.Deltas.Entities.Restaurants.ImagesCommerce;
 
+import com.app.DeltasDelivery.Deltas.Firebase.FirebaseMethods;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.api.core.ApiFuture;
+import com.google.cloud.firestore.DocumentReference;
+import com.google.cloud.firestore.DocumentSnapshot;
+import lombok.val;
 import org.springframework.stereotype.Service;
 
 //Tools
@@ -24,7 +29,7 @@ import com.google.cloud.firestore.GeoPoint;
 
 @Service
 
-public class RestaurantsLogic {
+public class RestaurantsLogic implements FirebaseMethods {
 
     public ResponseGeneral restaurants(HashMap body, String env, String ban) throws JsonProcessingException {
 
@@ -40,7 +45,15 @@ public class RestaurantsLogic {
 
         HashMap<String, Object> bodyRestaurantFirebase = new HashMap();
 
+        // Mandamos a metodo firebase
+        //DocumentReference documentReference = getRestaurante();
+        //ApiFuture<DocumentSnapshot> apiFuture = documentReference.get();
+        //DocumentSnapshot documentSnapshot = apiFuture.get();
 
+        //Consultamos - Orden
+        //DocumentReference documentReference = getComercio(body.get("name").toString());
+        //ApiFuture <DocumentSnapshot> apiFuture = documentReference.get();
+        //DocumentSnapshot documentSnapshot = apiFuture.get();
 
         //Creación
         if (ban.equals("1")) {
@@ -57,6 +70,11 @@ public class RestaurantsLogic {
             System.out.println("CUERPO Final DEL RESTAURANTE JSON------ INSERTAR");
             JSONObject bodyJson1 = new JSONObject(bodyRestaurantFirebase);
             System.out.println(bodyJson1);
+
+            // Vamos a insertar
+            System.out.println("YA SE CREO EN FIREBASE");
+            String  id_restaurante = body.get("name").toString();
+            FirebaseMethods.create_restaurante(id_restaurante, bodyRestaurantFirebase);
 
 
             // ********** Mandarlos a conexion firebse creacion con campos requeridos **********
@@ -80,6 +98,11 @@ public class RestaurantsLogic {
             System.out.println(bodyJson2);
 
             // ********** Mandarlos a conexion firebse Modificacion con campos requeridos **********
+
+            // Vamos a insertar
+            System.out.println("YA SE MODIFICO EN FIREBASE");
+            String  id_restaurante = body.get("name").toString();
+            FirebaseMethods.update_restaurante(id_restaurante, bodyRestaurantFirebase);
 
 
             response.setCode("200");

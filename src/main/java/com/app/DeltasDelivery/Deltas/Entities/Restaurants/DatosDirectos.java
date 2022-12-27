@@ -2,14 +2,14 @@ package com.app.DeltasDelivery.Deltas.Entities.Restaurants;
 
 public class DatosDirectos {
 
-    private Object description;
-    private Object nameCommerce;
-    private Object phone;
-    private Object score;
-    private Object status;
-    private Object name;
+    public Object description;
+    public Object nameCommerce;
+    public Object phone;
+    public Object score;
+    public Object status;
+    public Object name;
 
-    private Object ban;
+    public Object ban;
 
     public DatosDirectos(String ban) {
         this.ban= ban;

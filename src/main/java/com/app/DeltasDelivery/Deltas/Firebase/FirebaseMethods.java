@@ -1,5 +1,6 @@
 package com.app.DeltasDelivery.Deltas.Firebase;
 
+import java.util.HashMap;
 import java.util.Map;
 
 
@@ -9,6 +10,7 @@ import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.SetOptions;
 
 import lombok.var;
+import org.json.JSONObject;
 
 public interface FirebaseMethods {
 
@@ -73,7 +75,7 @@ public interface FirebaseMethods {
 
        /** Obtener Categoria
      * @param idRestaurante
-     * @param idPromo
+     * @param
      */
     static DocumentReference getCategory(String idRestaurante, String idCat){
         try{
@@ -100,8 +102,12 @@ public interface FirebaseMethods {
      */
     static void create_restaurante(String idRestaurante, Map<String, Object> body){
         try{
-            var reference = getRestaurante(idRestaurante);
-            reference.set(body);
+
+            System.out.println("Ya entro el JSON");
+            System.out.println(body);
+
+            DocumentReference reference = getRestaurante(idRestaurante);
+            reference.set(new JSONObject(body).toMap());
             Loggers.infoLog("Restaurante Creado--- "+idRestaurante, "Succesfull");
             
         } catch(Exception e){
@@ -155,10 +161,10 @@ public interface FirebaseMethods {
      * @param idRestaurante
      * @param body
      */
-    static void update_restaurante(String idRestaurante, Map<String, Object> body){    
+    static void update_restaurante(String idRestaurante, Map<String, Object> body){
         try{
             var reference = getRestaurante(idRestaurante);
-            reference.set(body, SetOptions.merge());
+            reference.update(new JSONObject(body).toMap());
             Loggers.infoLog("Restaurante Actualizado--- "+idRestaurante, "Succesfull");
         } catch(Exception e){
             Loggers.errorLog("update_restaurante() -- FirebaseMethods", e.toString());
@@ -181,5 +187,13 @@ public interface FirebaseMethods {
 
     //----------------------------------------------------------------------------
 
-    
+    default DocumentReference getComercio(String idRestaurante) {
+        assert false;
+        return firebase.getFirestore()
+                .collection(col_name)
+                .document(idRestaurante);
+
+    }
+
+
 }
